@@ -1,14 +1,24 @@
-
 <?php
 require_once 'Database.php';
 require_once 'ConcreteProcess.php';
+
 class ProcessManager {
+    private static $instance = null; 
     private $dbConnection;
     private $processPrototype;
 
-    public function __construct() {
+
+    private function __construct() {
         $this->dbConnection = Database::getInstance()->getConnection();
         $this->processPrototype = new ConcreteProcess(0, '', '', '', '', '', '', '', '', '', '', '', '', '', '');
+    }
+
+
+    public static function getInstance() {
+        if (self::$instance === null) {
+            self::$instance = new ProcessManager();
+        }
+        return self::$instance;
     }
 
     public function createProcess($numeroProcesso, $dataDistribuicao, $nomePartes, $advogados, $juizResponsavel, $tribunal, $dataPeticaoInicial, $dataContestacao = null, $dataAudienciaConciliacao = null, $decisoesInterlocutorias = null, $dataSentenca = null, $valorCausa = null, $dataIntimacao = null, $situacao = null, $descricao = null) {
@@ -20,7 +30,7 @@ class ProcessManager {
         $process->setJuizResponsavel($juizResponsavel);
         $process->setTribunal($tribunal);
         $process->setDataPeticaoInicial($dataPeticaoInicial);
-    
+
         $query = "INSERT INTO processos (numero_processo, data_distribuicao, nome_partes, advogados, juiz_responsavel, tribunal, data_peticao_inicial, data_contestacao, data_audiencia_conciliacao, decisoes_interlocutorias, data_sentenca, valor_causa, data_intimacao, situacao, descricao) VALUES (:numero_processo, :data_distribuicao, :nome_partes, :advogados, :juiz_responsavel, :tribunal, :data_peticao_inicial, :data_contestacao, :data_audiencia_conciliacao, :decisoes_interlocutorias, :data_sentenca, :valor_causa, :data_intimacao, :situacao, :descricao)";
         $stmt = $this->dbConnection->prepare($query);
         $stmt->bindParam(':numero_processo', $numeroProcesso);
@@ -30,55 +40,55 @@ class ProcessManager {
         $stmt->bindParam(':juiz_responsavel', $juizResponsavel);
         $stmt->bindParam(':tribunal', $tribunal);
         $stmt->bindParam(':data_peticao_inicial', $dataPeticaoInicial);
-    
+
         if ($dataContestacao === '') {
             $stmt->bindValue(':data_contestacao', null);
         } else {
             $stmt->bindParam(':data_contestacao', $dataContestacao);
         }
-    
+
         if ($dataAudienciaConciliacao === '') {
             $stmt->bindValue(':data_audiencia_conciliacao', null);
         } else {
             $stmt->bindParam(':data_audiencia_conciliacao', $dataAudienciaConciliacao);
         }
-    
+
         if ($decisoesInterlocutorias === '') {
             $stmt->bindValue(':decisoes_interlocutorias', null);
         } else {
             $stmt->bindParam(':decisoes_interlocutorias', $decisoesInterlocutorias);
         }
-    
+
         if ($dataSentenca === '') {
             $stmt->bindValue(':data_sentenca', null);
         } else {
             $stmt->bindParam(':data_sentenca', $dataSentenca);
         }
-    
+
         if ($valorCausa === '') {
             $stmt->bindValue(':valor_causa', null);
         } else {
             $stmt->bindParam(':valor_causa', $valorCausa);
         }
-    
+
         if ($dataIntimacao === '') {
             $stmt->bindValue(':data_intimacao', null);
         } else {
             $stmt->bindParam(':data_intimacao', $dataIntimacao);
         }
-    
+
         if ($situacao === '') {
             $stmt->bindValue(':situacao', null);
         } else {
             $stmt->bindParam(':situacao', $situacao);
         }
-    
+
         if ($descricao === '') {
             $stmt->bindValue(':descricao', null);
         } else {
             $stmt->bindParam(':descricao', $descricao);
         }
-    
+
         $stmt->execute();
         return $process;
     }

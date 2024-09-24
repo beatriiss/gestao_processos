@@ -1,8 +1,5 @@
 
 <?php
-require_once './classes/ProcessManager.php';
-
-$processManager = new ProcessManager();
 
 ?>
 
