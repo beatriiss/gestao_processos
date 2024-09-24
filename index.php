@@ -1,120 +1,80 @@
+
 <?php
-include_once './classes/Database.php';
-include_once './classes/Process.php';
-include_once './classes/GerenciadorDeProcessos.php';
-include_once './classes/ProcessDAO.php';
+require_once './classes/ProcessManager.php';
 
-// Obter a instância do banco de dados
-$database = Database::getInstance();
-$db = $database->getConnection();
+$processManager = new ProcessManager();
 
-// Inicializar o DAO de processos
-$processDAO = new ProcessDAO($db);
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $numeroProcesso = $_POST['numero_processo'];
+    $dataDistribuicao = $_POST['data_distribuicao'];
+    $nomePartes = $_POST['nome_partes'];
+    $advogados = $_POST['advogados'];
+    $juizResponsavel = $_POST['juiz_responsavel'];
+    $tribunal = $_POST['tribunal'];
+    $dataPeticaoInicial = $_POST['data_peticao_inicial'];
+    $dataContestacao = $_POST['data_contestacao'];
+    $dataAudienciaConciliacao = $_POST['data_audiencia_conciliacao'];
+    $decisoesInterlocutorias = $_POST['decisoes_interlocutorias'];
+    $dataSentenca = $_POST['data_sentenca'];
+    $valorCausa = $_POST['valor_causa'];
+    $dataIntimacao = $_POST['data_intimacao'];
+    $situacao = $_POST['situacao'];
+    $descricao = $_POST['descricao'];
 
-// Definir o protótipo de processo
-$processo_prototipo = new Process(
-    "123456", // numeroProcesso
-    "2024-09-17", // dataDistribuicao
-    "Parte A vs Parte B", // nomePartes
-    "Advogado X", // advogados
-    "Juiz Y", // juizResponsavel
-    "Tribunal Z", // tribunal
-    "2024-09-20", // dataPeticaoInicial
-    "2024-09-25", // dataContestacao
-    "2024-10-05", // dataAudienciaConciliacao
-    "Decisão 1, Decisão 2", // decisoesInterlocutorias
-    "2024-10-15", // dataSentenca
-    "5000", // valorCausa
-    "2024-10-20", // dataIntimacao
-    "Em andamento", // situacao
-    "Descrição do processo" // descricao
-);
-
-$gerenciador = new GerenciadorDeProcessos($processo_prototipo);
-
-if (isset($_POST['submit'])) {
-    $processo = new Process(
-        $_POST['numero_processo'],
-        $_POST['data_distribuicao'],
-        $_POST['nome_partes'] ?: null,
-        $_POST['advogados'] ?: null,
-        $_POST['juiz_responsavel'] ?: null,
-        $_POST['tribunal'] ?: null,
-        $_POST['data_peticao_inicial'] ?: null,
-        $_POST['data_contestacao'] ?: null,
-        $_POST['data_audiencia_conciliacao'] ?: null,
-        $_POST['decisoes_interlocutorias'] ?: null,
-        $_POST['data_sentenca'] ?: null,
-        $_POST['valor_causa'] ?: null,
-        $_POST['data_intimacao'] ?: null,
-        $_POST['situacao'] ?: null,
-        $_POST['descricao'] ?: null
-    );
-    
-    $processDAO = new ProcessDAO(Database::getInstance()->getConnection());
-    
-    if ($processDAO->inserirProcesso($processo)) {
-        echo "Processo inserido com sucesso!";
-    } else {
-        echo "Falha ao inserir o processo.";
-    }
+    $processManager->createProcess($numeroProcesso, $dataDistribuicao, $nomePartes, $advogados, $juizResponsavel, $tribunal, $dataPeticaoInicial, $dataContestacao, $dataAudienciaConciliacao, $decisoesInterlocutorias, $dataSentenca, $valorCausa, $dataIntimacao, $situacao, $descricao);
 }
 
+$processes = $processManager->getProcesses();
 
-// Ler processos existentes
-$processos = $processDAO->lerProcessos();
 ?>
 
-<!DOCTYPE html>
-<html lang="pt-br">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Gerenciamento de Processos</title>
+    <title>Processos</title>
 </head>
 <body>
-    <h1>Inserir Novo Processo</h1>
-    <form method="POST" action="index.php">
-        Número do Processo: <input type="text" name="numero_processo" required><br>
-        Data de Distribuição: <input type="date" name="data_distribuicao" required><br>
-        Nome das Partes: <textarea name="nome_partes" required></textarea><br>
-        Advogados: <textarea name="advogados" required></textarea><br>
-        Tribunal: <input type="text" name="tribunal" required><br> 
-        Data da Petição Inicial: <input type="date" name="data_peticao_inicial"><br> 
-        Situação:  <input type="text" name="situacao" required><br> <!-- Opcional -->
-        Descrição: <textarea name="descricao" required></textarea><br> <!-- Opcional -->
-        Juiz Responsável: <input type="text" name="juiz_responsavel"><br> 
-        Data da Contestação: <input type="date" name="data_contestacao"><br> <!-- Opcional -->
-        Data da Audiência de Conciliação: <input type="date" name="data_audiencia_conciliacao"><br> <!-- Opcional -->
-        Decisões Interlocutórias: <textarea name="decisoes_interlocutorias"></textarea><br> <!-- Opcional -->
-        Data da Sentença: <input type="date" name="data_sentenca"><br> <!-- Opcional -->
-        Valor da Causa: <input type="text" name="valor_causa"><br> <!-- Opcional -->
-        Data de Intimação: <input type="date" name="data_intimacao"><br> <!-- Opcional -->
-
-        <button type="submit" name="submit">Inserir Processo</button>
+    <h1>Processos</h1>
+    <form method="post">
+        <label for="numero_processo">Número do Processo:</label>
+        <input type="text" id="numero_processo" name="numero_processo"><br><br>
+        <label for="data_distribuicao">Data de Distribuição:</label>
+        <input type="date" id="data_distribuicao" name="data_distribuicao"><br><br>
+        <label for="nome_partes">Nome das Partes:</label>
+        <input type="text" id="nome_partes" name="nome_partes"><br><br>
+        <label for="advogados">Advogados:</label>
+        <input type="text" id="advogados" name="advogados"><br><br>
+        <label for="juiz_responsavel">Juiz Responsável:</label>
+        <input type="text" id="juiz_responsavel" name="juiz_responsavel"><br><br>
+        <label for="tribunal">Tribunal:</label>
+        <input type="text" id="tribunal" name="tribunal"><br><br>
+        <label for="data_peticao_inicial">Data de Petição Inicial:</label>
+        <input type="date" id="data_peticao_inicial" name="data_peticao_inicial"><br><br>
+        <label for="data_contestacao">Data de Contestação:</label>
+        <input type="date" id="data_contestacao" name="data_contestacao"><br><br>
+        <label for="data_audiencia_conciliacao">Data de Audiência de Conciliação:</label>
+        <input type="date" id="data_audiencia_conciliacao" name="data_audiencia_conciliacao"><br><br>
+        <label for="decisoes_interlocutorias">Decisões Interlocutórias:</label>
+        <input type="text" id="decisoes_interlocutorias" name="decisoes_interlocutorias"><br><br>
+        <label for="data_sentenca">Data de Sentença:</label>
+        <input type="date" id="data_sentenca" name="data_sentenca"><br><br>
+        <label for="valor_causa">Valor da Causa:</label>
+        <input type="text" id="valor_causa" name="valor_causa"><br><br>
+        <label for="data_intimacao">Data de Intimação:</label>
+        <input type="date" id="data_intimacao" name="data_intimacao"><br><br>
+        <label for="situacao">Situação:</label>
+        <input type="text" id="situacao" name="situacao"><br><br>
+        <label for="descricao">Descrição:</label>
+        <input type="text" id="descricao" name="descricao"><br><br>
+        <input type="submit" value="Criar Processo">
     </form>
 
-    <h2>Lista de Processos</h2>
-    <table border="1">
-        <tr>
-            <th>Número do Processo</th>
-            <th>Nome da Parte</th>
-            <th>Advogado</th>
-            <th>Situação</th>
-            <th>Data de Distribuição</th>
-            <th>Descrição</th>
-        </tr>
-        <?php foreach ($processos as $processo): ?>
-            <tr>
-                <td><?php echo htmlspecialchars($processo->getNumeroProcesso()); ?></td>
-                <td><?php echo htmlspecialchars($processo->getNomePartes()); ?></td>
-                <td><?php echo htmlspecialchars($processo->getAdvogados()); ?></td>
-                <td><?php echo htmlspecialchars($processo->getSituacao()); ?></td>
-                <td><?php echo htmlspecialchars($processo->getDataDistribuicao()); ?></td>
-                <td><?php echo htmlspecialchars($processo->getDescricao()); ?></td>
-            </tr>
-        <?php endforeach; ?>
-    </table>
-
+    <h2>Processos Criados:</h2>
+    <ul>
+        <?php foreach ($processes as $process) { ?>
+            <li>
+                <?= $process->getNumeroProcesso() ?> - <?= $process->getNomePartes() ?>
+            </li>
+        <?php } ?>
+    </ul>
 </body>
 </html>
-
