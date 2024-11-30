@@ -49,6 +49,7 @@ if (isset($_POST['update_id'])) {
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -62,6 +63,7 @@ if (isset($_POST['update_id'])) {
             padding: 0;
             background-color: #f4f4f9;
         }
+
         .navbar {
             background-color: #4a90e2;
             padding: 10px 20px;
@@ -81,12 +83,15 @@ if (isset($_POST['update_id'])) {
         .navbar a:hover {
             text-decoration: underline;
         }
+
         .container {
             padding: 20px;
         }
+
         h1 {
-            color:  #4a90e2;
+            color: #4a90e2;
         }
+
         .button {
             display: inline-block;
             background-color: #4a90e2;
@@ -97,23 +102,29 @@ if (isset($_POST['update_id'])) {
             font-weight: bold;
             border-color: #0056b3;
         }
+
         .button:hover {
             background-color: #003d80;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
         }
-        table th, table td {
+
+        table th,
+        table td {
             border: 1px solid #ddd;
             padding: 10px;
             text-align: left;
         }
+
         table th {
             background-color: #4a90e2;
             color: #fff;
         }
+
         .actions button {
             margin: 0 5px;
             padding: 5px 10px;
@@ -122,34 +133,43 @@ if (isset($_POST['update_id'])) {
             cursor: pointer;
             font-weight: bold;
         }
+
         .detalhar-button {
             background-color: #0056b3;
             color: #fff;
         }
+
         .detalhar-button:hover {
             background-color: #003d80;
         }
+
         .atualizar-button {
             background-color: #4CAF50;
             color: #fff;
         }
+
         .atualizar-button:hover {
             background-color: #3e8e41;
         }
+
         .delete-button {
             background-color: #f44336;
             color: #fff;
         }
+
         .delete-button:hover {
             background-color: #d32f2f;
         }
+
         .error-message {
             color: red;
         }
+
         .success-message {
             color: green;
             margin-bottom: 20px;
         }
+
         .modal {
             display: none;
             position: fixed;
@@ -159,9 +179,10 @@ if (isset($_POST['update_id'])) {
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0,0,0,0.4);
+            background-color: rgba(0, 0, 0, 0.4);
             padding-top: 60px;
         }
+
         .modal-content {
             background-color: #fff;
             margin: 5% auto;
@@ -170,38 +191,41 @@ if (isset($_POST['update_id'])) {
             width: 80%;
             border-radius: 10px;
         }
+
         .close {
             color: #aaa;
             float: right;
             font-size: 28px;
             font-weight: bold;
         }
+
         .close:hover,
         .close:focus {
             color: black;
             text-decoration: none;
             cursor: pointer;
         }
+
         #search {
-    width: 100%; /* Ocupa toda a largura disponível */
-    max-width: 500px; /* Define um limite máximo para a largura */
-    height: 15px; /* Define a altura do campo */
-    padding: 10px; /* Espaço interno para texto */
-    font-size: 16px; /* Tamanho da fonte */
-    border: 2px solid #ccc; /* Borda com espessura e cor */
-    border-radius: 8px; /* Bordas arredondadas */
-    outline: none; /* Remove o contorno padrão */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombras para efeito estético */
-    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Animação para foco */
-}
+            width: 100%;
+            max-width: 500px;
+            height: 15px;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            outline: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
 
-#search:focus {
-    border-color: #007BFF; /* Cor da borda ao focar */
-    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2); /* Sombras ao focar */
-}
-
+        #search:focus {
+            border-color: #007BFF;
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
+        }
     </style>
 </head>
+
 <body>
     <div class="navbar">
         <a href="index.php">Voltar à Home</a>
@@ -217,8 +241,8 @@ if (isset($_POST['update_id'])) {
         <?php endif; ?>
 
         <form method="GET" action="visualizar_processos.php">
-            <label for="search">Buscar processo por ID ou número:</label>
-            <input type="text" name="search" id="search" placeholder="Digite o ID ou número do processo">
+            <label for="search">Buscar processo por ID:</label>
+            <input type="text" name="search" id="search" placeholder="Digite o ID">
             <button type="submit" class="button">Buscar</button>
         </form>
 
@@ -241,11 +265,14 @@ if (isset($_POST['update_id'])) {
                             <td><?= htmlspecialchars($processo['autorNome']) ?></td>
                             <td><?= htmlspecialchars($processo['descricaoCaso']) ?></td>
                             <td class="actions">
-                                <button class="detalhar-button" onclick="openModal(<?= $processo['id'] ?>, 'detalhar')">Detalhar</button>
-                                <button class="atualizar-button" onclick="openModal(<?= $processo['id'] ?>, 'atualizar')">Atualizar</button>
+                                <button class="detalhar-button"
+                                    onclick="openModal(<?= $processo['id'] ?>, 'detalhar')">Detalhar</button>
+                                <button class="atualizar-button"
+                                    onclick="openModal(<?= $processo['id'] ?>, 'atualizar')">Atualizar</button>
                                 <form action="visualizar_processos.php" method="POST" style="display:inline;">
                                     <input type="hidden" name="delete_id" value="<?= $processo['id'] ?>">
-                                    <button type="submit" class="delete-button" onclick="return confirm('Tem certeza que deseja excluir este processo?')">Excluir</button>
+                                    <button type="submit" class="delete-button"
+                                        onclick="return confirm('Tem certeza que deseja excluir este processo?')">Excluir</button>
                                 </form>
                             </td>
                         </tr>
@@ -285,4 +312,5 @@ if (isset($_POST['update_id'])) {
         }
     </script>
 </body>
+
 </html>
